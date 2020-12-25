@@ -13,3 +13,12 @@ In fact, gradle cache folder structure is almost the same as local maven reposit
 
 ## Usage
 Android Studio configuration.
+
+```gradle
+repositories {
+    mavenCentral()
+    maven {
+        url "<path to local maven repository>/"
+    }
+ }
+ ```
