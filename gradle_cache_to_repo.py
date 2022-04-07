@@ -3,6 +3,7 @@
 # History: 
 # [2019/05/31 11:27 AM] Created.
 # [2020/12/25 10:22 AM] "Cannot create a file when that file already exists" error fix.
+# [2022/04/07 20:24 PM] Windows file path length limitation error fix.
 #
 # Function: Convert android gradle cache into local maven repository.
 #           This local maven repository can be used in gradle offline build directly instead of gradle cache.
@@ -16,6 +17,11 @@ dst = "E:/android/gradle_local_repo/"
 
 group_count = 0
 artifect_count = 0
+
+def getTransformedPath(path):
+    transformedPath = path.replace("/", "\\")
+    transformedPath = "\\\\?\\" + transformedPath
+    return transformedPath
 
 def makedirs(path):
     if not os.path.exists(path):
@@ -64,6 +70,10 @@ def processVersion(group, artifect, artifect_dir, version):
         for file in files:
             src_file_path = hash_dir + "/" + file
             dst_file_path = version_dir + "/" + file
+
+            src_file_path = getTransformedPath(src_file_path)
+            dst_file_path = getTransformedPath(dst_file_path)
+
             copyfile(src_file_path, dst_file_path)
     return
 
@@ -72,5 +82,5 @@ for group in groups:
     processGroup(group)
 
 print("Done!")
-print('Total {group_count} groups')
-print('Total {artifect_count} artifects')
+print("Total %d groups"%(group_count))
+print("Total %d artifects"%(artifect_count))
